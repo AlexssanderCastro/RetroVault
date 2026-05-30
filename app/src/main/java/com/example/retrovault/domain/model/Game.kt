@@ -9,5 +9,10 @@ data class Game(
     val developer: String,
     val rating: Float,
     val notes: String,
-    val createdAt: Long
+    val createdAt: Long,
+    val favorito: Boolean = false,
+    val zerado: Boolean = false,
+    val naListaDeDesejos: Boolean = false,
+    val dataConclusao: Long? = null,
+    val horasJogadas: Int? = null
 )

@@ -21,7 +21,11 @@ data class AddGameForm(
     val genre: String = "",
     val developer: String = "",
     val rating: String = "",
-    val notes: String = ""
+    val notes: String = "",
+    val favorito: Boolean = false,
+    val zerado: Boolean = false,
+    val naListaDeDesejos: Boolean = false,
+    val horasJogadas: String = ""
 )
 
 data class AddGameUiState(
@@ -57,6 +61,10 @@ class AddGameViewModel(
     fun updateDeveloper(value: String) = updateForm { it.copy(developer = value) }
     fun updateRating(value: String) = updateForm { it.copy(rating = value) }
     fun updateNotes(value: String) = updateForm { it.copy(notes = value) }
+    fun updateFavorito(value: Boolean) = updateForm { it.copy(favorito = value) }
+    fun updateZerado(value: Boolean) = updateForm { it.copy(zerado = value) }
+    fun updateDesejado(value: Boolean) = updateForm { it.copy(naListaDeDesejos = value) }
+    fun updateHorasJogadas(value: String) = updateForm { it.copy(horasJogadas = value) }
 
     fun save() {
         viewModelScope.launch {
@@ -72,6 +80,7 @@ class AddGameViewModel(
             val year = form.year.toInt()
             val rating = form.rating.toFloat()
             val now = System.currentTimeMillis()
+            val horas = form.horasJogadas.toIntOrNull()
 
             val baseGame = if (gameId != null) {
                 repository.getGameById(gameId)
@@ -88,7 +97,12 @@ class AddGameViewModel(
                 developer = form.developer.trim(),
                 rating = rating,
                 notes = form.notes.trim(),
-                createdAt = baseGame?.createdAt ?: now
+                createdAt = baseGame?.createdAt ?: now,
+                favorito = form.favorito,
+                zerado = form.zerado,
+                naListaDeDesejos = form.naListaDeDesejos,
+                horasJogadas = horas,
+                dataConclusao = if (form.zerado) now else null
             )
 
             if (gameId == null) {
@@ -120,7 +134,11 @@ class AddGameViewModel(
                         genre = game.genre,
                         developer = game.developer,
                         rating = game.rating.toString(),
-                        notes = game.notes
+                        notes = game.notes,
+                        favorito = game.favorito,
+                        zerado = game.zerado,
+                        naListaDeDesejos = game.naListaDeDesejos,
+                        horasJogadas = game.horasJogadas?.toString() ?: ""
                     )
                 )
             }

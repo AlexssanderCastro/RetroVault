@@ -58,4 +58,26 @@ class DetailsViewModel(
             _events.emit(FormEvent.NavigateBack)
         }
     }
+
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            val current = (_state.value as? UiState.Success)?.data ?: return@launch
+            repository.toggleFavorite(current.id)
+        }
+    }
+
+    fun toggleWishlist() {
+        viewModelScope.launch {
+            val current = (_state.value as? UiState.Success)?.data ?: return@launch
+            repository.toggleWishlist(current.id)
+        }
+    }
+
+    fun markCompleted(completed: Boolean) {
+        viewModelScope.launch {
+            val current = (_state.value as? UiState.Success)?.data ?: return@launch
+            val date = if (completed) System.currentTimeMillis() else null
+            repository.markCompleted(current.id, completed, date)
+        }
+    }
 }

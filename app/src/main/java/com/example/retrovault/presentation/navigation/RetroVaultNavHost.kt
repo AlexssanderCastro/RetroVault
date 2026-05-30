@@ -12,10 +12,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.retrovault.RetroVaultApp
 import com.example.retrovault.presentation.screens.AddGameScreen
 import com.example.retrovault.presentation.screens.DetailsScreen
+import com.example.retrovault.presentation.screens.FavoritesScreen
 import com.example.retrovault.presentation.screens.HomeScreen
 import com.example.retrovault.presentation.screens.SplashScreen
 import com.example.retrovault.presentation.viewmodel.AddGameViewModel
 import com.example.retrovault.presentation.viewmodel.DetailsViewModel
+import com.example.retrovault.presentation.viewmodel.FavoritesViewModel
 import com.example.retrovault.presentation.viewmodel.HomeViewModel
 import com.example.retrovault.presentation.viewmodel.RetroVaultViewModelFactory
 
@@ -43,7 +45,18 @@ fun RetroVaultNavHost() {
                 onAddGame = { navController.navigate(Screen.AddGame.route) },
                 onGameSelected = { gameId ->
                     navController.navigate(Screen.Details.createRoute(gameId))
-                }
+                },
+                onFavorites = { navController.navigate(Screen.Favorites.route) }
+            )
+        }
+        composable(Screen.Favorites.route) {
+            val factory = remember { RetroVaultViewModelFactory.fromApplication(app) }
+            val viewModel: FavoritesViewModel = viewModel(factory = factory)
+            FavoritesScreen(
+                viewModel = viewModel,
+                onHome = { navController.popBackStack(Screen.Home.route, false) },
+                onGameSelected = { gameId -> navController.navigate(Screen.Details.createRoute(gameId)) },
+                onToggleFavorite = viewModel::toggleFavorite
             )
         }
         composable(Screen.AddGame.route) {

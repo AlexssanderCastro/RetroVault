@@ -88,6 +88,7 @@ fun DetailsScreen(
                 DetailsContent(
                     game = game,
                     onEdit = { onEdit(game.id) },
+                    onToggleFavorite = { viewModel.toggleFavorite() },
                     onDelete = { showDeleteDialog = true },
                     modifier = Modifier.padding(padding)
                 )
@@ -100,6 +101,7 @@ fun DetailsScreen(
 private fun DetailsContent(
     game: Game,
     onEdit: () -> Unit,
+    onToggleFavorite: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -130,11 +132,18 @@ private fun DetailsContent(
         Text(text = "Nota: ${game.rating}", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Observacoes: ${game.notes}", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Data de cadastro: $dateLabel", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = if (game.favorito) "Favorito" else "Não favorito",
+            style = MaterialTheme.typography.bodyMedium
+        )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            OutlinedButton(onClick = onToggleFavorite, modifier = Modifier.weight(1f)) {
+                Text(if (game.favorito) "Remover favorito" else "Favoritar")
+            }
             OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f)) {
                 Text("Editar")
             }

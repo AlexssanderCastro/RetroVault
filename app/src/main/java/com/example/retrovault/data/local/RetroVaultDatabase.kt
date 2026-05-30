@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [GameEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class RetroVaultDatabase : RoomDatabase() {
@@ -17,6 +19,17 @@ abstract class RetroVaultDatabase : RoomDatabase() {
         @Volatile
         private var instance: RetroVaultDatabase? = null
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add new columns with sensible defaults
+                database.execSQL("ALTER TABLE games ADD COLUMN favorito INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE games ADD COLUMN zerado INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE games ADD COLUMN naListaDeDesejos INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE games ADD COLUMN dataConclusao INTEGER")
+                database.execSQL("ALTER TABLE games ADD COLUMN horasJogadas INTEGER")
+            }
+        }
+
         fun getInstance(context: Context): RetroVaultDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
@@ -24,6 +37,7 @@ abstract class RetroVaultDatabase : RoomDatabase() {
                     RetroVaultDatabase::class.java,
                     "retrovault.db"
                 )
+                    .addMigrations(MIGRATION_2_3)
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { instance = it }

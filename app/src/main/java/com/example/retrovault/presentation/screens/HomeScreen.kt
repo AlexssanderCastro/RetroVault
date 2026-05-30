@@ -15,12 +15,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,7 +38,8 @@ import com.example.retrovault.presentation.viewmodel.HomeViewModel
 fun HomeScreen(
     viewModel: HomeViewModel,
     onAddGame: () -> Unit,
-    onGameSelected: (Long) -> Unit
+    onGameSelected: (Long) -> Unit,
+    onFavorites: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -52,7 +50,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = { RetroTopBar(title = "RetroVault") },
-        bottomBar = { RetroBottomNavigation() },
+        bottomBar = { RetroBottomNavigation(selectedIndex = 0, onItemSelected = { if (it == 1) onFavorites() }) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddGame) {
@@ -60,18 +58,13 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        when {
-            state.isLoading -> LoadingComponent()
-            state.games.isEmpty() -> EmptyStateComponent()
-            else -> {
-                HomeContent(
-                    state = state,
-                    onQueryChange = viewModel::updateQuery,
-                    onGameSelected = onGameSelected,
-                    modifier = Modifier.padding(padding)
-                )
-            }
-        }
+        HomeContent(
+            state = state,
+            onQueryChange = viewModel::updateQuery,
+            onGameSelected = onGameSelected,
+            onToggleFavorite = viewModel::toggleFavorite,
+            modifier = Modifier.padding(padding)
+        )
     }
 }
 
@@ -80,6 +73,7 @@ private fun HomeContent(
     state: HomeUiState,
     onQueryChange: (String) -> Unit,
     onGameSelected: (Long) -> Unit,
+    onToggleFavorite: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val games = state.games
@@ -89,8 +83,23 @@ private fun HomeContent(
             Spacer(modifier = Modifier.height(12.dp))
             RetroSearchBar(value = state.query, onValueChange = onQueryChange)
             Spacer(modifier = Modifier.height(16.dp))
-            StatsHighlight(state = state)
-            Spacer(modifier = Modifier.height(16.dp))
+
+            if (state.isLoading) {
+                LoadingComponent()
+                return@Column
+            }
+
+            if (games.isEmpty()) {
+                EmptyStateComponent(
+                    title = if (state.query.isBlank()) "Nenhum jogo encontrado" else "Nenhum resultado",
+                    subtitle = if (state.query.isBlank()) {
+                        "Adicione seu primeiro jogo para começar"
+                    } else {
+                        "Tente outra pesquisa"
+                    }
+                )
+                return@Column
+            }
 
             if (isWide) {
                 LazyVerticalGrid(
@@ -101,7 +110,11 @@ private fun HomeContent(
                 ) {
                     items(games.size) { index ->
                         val game = games[index]
-                        GameCard(game = game, onClick = { onGameSelected(game.id) })
+                        GameCard(
+                            game = game,
+                            onClick = { onGameSelected(game.id) },
+                            onToggleFavorite = { onToggleFavorite(game.id) }
+                        )
                     }
                 }
             } else {
@@ -110,37 +123,14 @@ private fun HomeContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(games) { game ->
-                        GameCard(game = game, onClick = { onGameSelected(game.id) })
+                        GameCard(
+                            game = game,
+                            onClick = { onGameSelected(game.id) },
+                            onToggleFavorite = { onToggleFavorite(game.id) }
+                        )
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun StatsHighlight(state: HomeUiState) {
-    val platformSummary = if (state.stats.platformCounts.isEmpty()) {
-        "Nenhuma plataforma cadastrada"
-    } else {
-        state.stats.platformCounts.take(3).joinToString(" | ") { "${it.first}: ${it.second}" }
-    }
-    val latestSummary = if (state.stats.latestGames.isEmpty()) {
-        "Nenhuma adicao recente"
-    } else {
-        state.stats.latestGames.joinToString(", ") { it.name }
-    }
-
-    Surface(
-        shape = MaterialTheme.shapes.large,
-        tonalElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Resumo da colecao", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Jogos cadastrados: ${state.stats.totalGames}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Plataformas: $platformSummary", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Ultimas adicoes: $latestSummary", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

@@ -28,4 +28,23 @@ class FakeGameRepository : GameRepository {
     override suspend fun updateGame(game: Game) = Unit
 
     override suspend fun deleteGame(game: Game) = Unit
+
+    // Fake implementations for new features (no state mutation, returns static data)
+    override fun observeFavorites(): Flow<List<Game>> = flowOf(games.filter { it.favorito })
+
+    override fun observeWishlist(): Flow<List<Game>> = flowOf(games.filter { it.naListaDeDesejos })
+
+    override fun observeCompleted(): Flow<List<Game>> = flowOf(games.filter { it.zerado })
+
+    override suspend fun toggleFavorite(gameId: Long) {
+        // No-op in fake repository
+    }
+
+    override suspend fun toggleWishlist(gameId: Long) {
+        // No-op in fake repository
+    }
+
+    override suspend fun markCompleted(gameId: Long, completed: Boolean, dateConclusao: Long?) {
+        // No-op in fake repository
+    }
 }

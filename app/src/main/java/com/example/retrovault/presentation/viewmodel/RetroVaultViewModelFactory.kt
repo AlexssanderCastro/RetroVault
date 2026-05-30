@@ -14,6 +14,8 @@ class RetroVaultViewModelFactory(
         return when {
             modelClass.isAssignableFrom(HomeViewModel::class.java) ->
                 HomeViewModel(repository) as T
+            modelClass.isAssignableFrom(FavoritesViewModel::class.java) ->
+                FavoritesViewModel(repository) as T
             modelClass.isAssignableFrom(DetailsViewModel::class.java) -> {
                 val resolvedId = gameId ?: 0L
                 DetailsViewModel(repository, resolvedId) as T
