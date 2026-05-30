@@ -47,7 +47,17 @@ fun RetroVaultNavHost() {
             )
         }
         composable(Screen.AddGame.route) {
-            val viewModel: AddGameViewModel = viewModel()
+            val factory = remember { RetroVaultViewModelFactory.fromApplication(app) }
+            val viewModel: AddGameViewModel = viewModel(factory = factory)
+            AddGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+        }
+        composable(
+            route = Screen.EditGame.route,
+            arguments = listOf(navArgument("gameId") { type = NavType.LongType })
+        ) { entry ->
+            val gameId = entry.arguments?.getLong("gameId") ?: 0L
+            val factory = remember { RetroVaultViewModelFactory.fromApplication(app, gameId) }
+            val viewModel: AddGameViewModel = viewModel(factory = factory)
             AddGameScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
         }
         composable(
@@ -57,8 +67,11 @@ fun RetroVaultNavHost() {
             val gameId = entry.arguments?.getLong("gameId") ?: 0L
             val factory = remember { RetroVaultViewModelFactory.fromApplication(app, gameId) }
             val viewModel: DetailsViewModel = viewModel(factory = factory)
-            DetailsScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+            DetailsScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onEdit = { id -> navController.navigate(Screen.EditGame.createRoute(id)) }
+            )
         }
     }
 }
-

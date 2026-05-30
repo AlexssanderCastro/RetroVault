@@ -11,16 +11,16 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun RetroSearchBar(
+    value: String,
+    onValueChange: (String) -> Unit,
     placeholder: String = "Pesquisar jogos",
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
-        value = "",
-        onValueChange = {},
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
-        readOnly = true,
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         placeholder = { Text(placeholder) }
     )
 }
-

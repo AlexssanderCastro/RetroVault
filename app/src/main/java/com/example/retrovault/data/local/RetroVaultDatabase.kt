@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [GameEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class RetroVaultDatabase : RoomDatabase() {
@@ -23,8 +23,10 @@ abstract class RetroVaultDatabase : RoomDatabase() {
                     context.applicationContext,
                     RetroVaultDatabase::class.java,
                     "retrovault.db"
-                ).build().also { instance = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { instance = it }
             }
     }
 }
-

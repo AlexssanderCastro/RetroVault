@@ -19,7 +19,7 @@ class RetroVaultViewModelFactory(
                 DetailsViewModel(repository, resolvedId) as T
             }
             modelClass.isAssignableFrom(AddGameViewModel::class.java) ->
-                AddGameViewModel() as T
+                AddGameViewModel(repository, gameId) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
@@ -30,5 +30,3 @@ class RetroVaultViewModelFactory(
         }
     }
 }
-
-

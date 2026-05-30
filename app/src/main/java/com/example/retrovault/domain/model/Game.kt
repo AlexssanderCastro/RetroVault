@@ -5,7 +5,9 @@ data class Game(
     val name: String,
     val platform: String,
     val year: Int,
+    val genre: String,
+    val developer: String,
     val rating: Float,
-    val coverUrl: String
+    val notes: String,
+    val createdAt: Long
 )
-
