@@ -39,7 +39,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onAddGame: () -> Unit,
     onGameSelected: (Long) -> Unit,
-    onFavorites: () -> Unit
+    onFavorites: () -> Unit,
+    onCompleted: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -50,7 +51,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = { RetroTopBar(title = "RetroVault") },
-        bottomBar = { RetroBottomNavigation(selectedIndex = 0, onItemSelected = { if (it == 1) onFavorites() }) },
+        bottomBar = { RetroBottomNavigation(selectedIndex = 0, onItemSelected = { if (it == 1) onFavorites() else if (it == 2) onCompleted() }) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddGame) {

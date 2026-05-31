@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -91,6 +93,7 @@ fun DetailsScreen(
                     game = game,
                     onEdit = { onEdit(game.id) },
                     onToggleFavorite = { viewModel.toggleFavorite() },
+                    onToggleCompleted = { completed -> viewModel.markCompleted(completed) },
                     onDelete = { showDeleteDialog = true },
                     modifier = Modifier.padding(padding)
                 )
@@ -104,6 +107,7 @@ private fun DetailsContent(
     game: Game,
     onEdit: () -> Unit,
     onToggleFavorite: () -> Unit,
+    onToggleCompleted: (Boolean) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -150,6 +154,15 @@ private fun DetailsContent(
             style = MaterialTheme.typography.bodyMedium
         )
 
+        if (game.zerado) {
+            val dateLabel = remember(game.dataConclusao) {
+                val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                game.dataConclusao?.let { formatter.format(Date(it)) } ?: ""
+            }
+            Text(text = "Zerado em: $dateLabel", style = MaterialTheme.typography.bodyMedium)
+        }
+
+        // Two-row button layout: favorite/zerado and edit/delete
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -157,6 +170,17 @@ private fun DetailsContent(
             OutlinedButton(onClick = onToggleFavorite, modifier = Modifier.weight(1f)) {
                 Text(if (game.favorito) "Remover favorito" else "Favoritar")
             }
+            OutlinedButton(onClick = { onToggleCompleted(!game.zerado) }, modifier = Modifier.weight(1f)) {
+                Text(if (game.zerado) "Desmarcar zerado" else "Marcar como zerado")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f)) {
                 Text("Editar")
             }

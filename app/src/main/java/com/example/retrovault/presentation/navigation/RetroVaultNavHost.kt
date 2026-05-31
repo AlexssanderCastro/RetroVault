@@ -15,11 +15,13 @@ import com.example.retrovault.presentation.screens.DetailsScreen
 import com.example.retrovault.presentation.screens.FavoritesScreen
 import com.example.retrovault.presentation.screens.HomeScreen
 import com.example.retrovault.presentation.screens.SplashScreen
+import com.example.retrovault.presentation.screens.CompletedScreen
 import com.example.retrovault.presentation.viewmodel.AddGameViewModel
 import com.example.retrovault.presentation.viewmodel.DetailsViewModel
 import com.example.retrovault.presentation.viewmodel.FavoritesViewModel
 import com.example.retrovault.presentation.viewmodel.HomeViewModel
 import com.example.retrovault.presentation.viewmodel.RetroVaultViewModelFactory
+import com.example.retrovault.presentation.viewmodel.CompletedViewModel
 
 @Composable
 fun RetroVaultNavHost() {
@@ -46,7 +48,8 @@ fun RetroVaultNavHost() {
                 onGameSelected = { gameId ->
                     navController.navigate(Screen.Details.createRoute(gameId))
                 },
-                onFavorites = { navController.navigate(Screen.Favorites.route) }
+                onFavorites = { navController.navigate(Screen.Favorites.route) },
+                onCompleted = { navController.navigate(Screen.Completed.route) }
             )
         }
         composable(Screen.Favorites.route) {
@@ -56,7 +59,18 @@ fun RetroVaultNavHost() {
                 viewModel = viewModel,
                 onHome = { navController.popBackStack(Screen.Home.route, false) },
                 onGameSelected = { gameId -> navController.navigate(Screen.Details.createRoute(gameId)) },
-                onToggleFavorite = viewModel::toggleFavorite
+                onToggleFavorite = viewModel::toggleFavorite,
+                onCompleted = { navController.navigate(Screen.Completed.route) }
+            )
+        }
+        composable(Screen.Completed.route) {
+            val factory = remember { RetroVaultViewModelFactory.fromApplication(app) }
+            val viewModel: com.example.retrovault.presentation.viewmodel.CompletedViewModel = viewModel(factory = factory)
+            com.example.retrovault.presentation.screens.CompletedScreen(
+                viewModel = viewModel,
+                onHome = { navController.popBackStack(Screen.Home.route, false) },
+                onGameSelected = { gameId -> navController.navigate(Screen.Details.createRoute(gameId)) },
+                onFavorites = { navController.navigate(Screen.Favorites.route) }
             )
         }
         composable(Screen.AddGame.route) {
