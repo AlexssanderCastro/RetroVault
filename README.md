@@ -2,8 +2,6 @@
 
 A retro game library app scaffold built with Kotlin and Jetpack Compose.
 
-![RetroVault Banner](docs/images/banner.png)
-
 ---
 
 # English
@@ -85,7 +83,7 @@ Optional (install to device/emulator):
 
 ---
 
-# Portuguese
+# Português
 
 ## Visao Geral
 RetroVault e um scaffold moderno de app Android para organizar uma biblioteca pessoal de jogos retro. Esta etapa foca em arquitetura, navegacao e base de UI.
