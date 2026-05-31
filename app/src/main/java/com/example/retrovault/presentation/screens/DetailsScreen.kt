@@ -27,7 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.retrovault.domain.model.Game
 import com.example.retrovault.presentation.components.EmptyStateComponent
 import com.example.retrovault.presentation.components.LoadingComponent
@@ -116,13 +118,24 @@ private fun DetailsContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Surface(
-            modifier = Modifier
-                .size(180.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            tonalElevation = 2.dp
-        ) {}
+        if (game.imageUri.isNullOrBlank()) {
+            Surface(
+                modifier = Modifier
+                    .size(180.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                tonalElevation = 2.dp
+            ) {}
+        } else {
+            AsyncImage(
+                model = game.imageUri,
+                contentDescription = "Foto do jogo",
+                modifier = Modifier
+                    .size(180.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Text(text = game.name, style = MaterialTheme.typography.titleLarge)
         Text(text = "Plataforma: ${game.platform}", style = MaterialTheme.typography.bodyMedium)

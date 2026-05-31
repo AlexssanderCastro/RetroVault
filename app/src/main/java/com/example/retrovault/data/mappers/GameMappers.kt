@@ -13,6 +13,7 @@ fun GameEntity.toDomain(): Game =
         developer = developer,
         rating = rating,
         notes = notes,
+        imageUri = imageUri,
         createdAt = createdAt,
         favorito = favorito,
         zerado = zerado,
@@ -31,6 +32,7 @@ fun Game.toEntity(): GameEntity =
         developer = developer,
         rating = rating,
         notes = notes,
+        imageUri = imageUri,
         createdAt = createdAt,
         favorito = favorito,
         zerado = zerado,
@@ -38,4 +40,3 @@ fun Game.toEntity(): GameEntity =
         dataConclusao = dataConclusao,
         horasJogadas = horasJogadas
     )
-

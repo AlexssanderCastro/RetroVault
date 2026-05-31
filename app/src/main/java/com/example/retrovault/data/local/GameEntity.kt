@@ -13,6 +13,7 @@ data class GameEntity(
     val developer: String,
     val rating: Float,
     val notes: String,
+    val imageUri: String? = null,
     val createdAt: Long,
     val favorito: Boolean = false,
     val zerado: Boolean = false,

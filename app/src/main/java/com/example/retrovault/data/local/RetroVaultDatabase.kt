@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [GameEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class RetroVaultDatabase : RoomDatabase() {
@@ -30,6 +30,12 @@ abstract class RetroVaultDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE games ADD COLUMN imageUri TEXT")
+            }
+        }
+
         fun getInstance(context: Context): RetroVaultDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
@@ -37,7 +43,7 @@ abstract class RetroVaultDatabase : RoomDatabase() {
                     RetroVaultDatabase::class.java,
                     "retrovault.db"
                 )
-                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { instance = it }

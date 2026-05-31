@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeGameRepository : GameRepository {
     private val games = listOf(
-        Game(1, "Chrono Trigger", "SNES", 1995, "RPG", "Square", 4.8f, "", 0L),
-        Game(2, "Castlevania: Symphony", "PS1", 1997, "Action", "Konami", 4.6f, "", 0L),
-        Game(3, "Mega Man X", "SNES", 1993, "Action", "Capcom", 4.4f, "", 0L),
-        Game(4, "Sonic the Hedgehog 2", "Genesis", 1992, "Platform", "Sega", 4.2f, "", 0L),
-        Game(5, "The Legend of Zelda", "NES", 1986, "Adventure", "Nintendo", 4.7f, "", 0L)
+        Game(id = 1, name = "Chrono Trigger", platform = "SNES", year = 1995, genre = "RPG", developer = "Square", rating = 4.8f, notes = "", createdAt = 0L),
+        Game(id = 2, name = "Castlevania: Symphony", platform = "PS1", year = 1997, genre = "Action", developer = "Konami", rating = 4.6f, notes = "", createdAt = 0L),
+        Game(id = 3, name = "Mega Man X", platform = "SNES", year = 1993, genre = "Action", developer = "Capcom", rating = 4.4f, notes = "", createdAt = 0L),
+        Game(id = 4, name = "Sonic the Hedgehog 2", platform = "Genesis", year = 1992, genre = "Platform", developer = "Sega", rating = 4.2f, notes = "", createdAt = 0L),
+        Game(id = 5, name = "The Legend of Zelda", platform = "NES", year = 1986, genre = "Adventure", developer = "Nintendo", rating = 4.7f, notes = "", createdAt = 0L)
     )
 
     override fun observeGames(): Flow<List<Game>> = flowOf(games)

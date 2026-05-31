@@ -22,6 +22,7 @@ data class AddGameForm(
     val developer: String = "",
     val rating: String = "",
     val notes: String = "",
+    val imageUri: String? = null,
     val favorito: Boolean = false,
     val zerado: Boolean = false,
     val naListaDeDesejos: Boolean = false,
@@ -61,6 +62,7 @@ class AddGameViewModel(
     fun updateDeveloper(value: String) = updateForm { it.copy(developer = value) }
     fun updateRating(value: String) = updateForm { it.copy(rating = value) }
     fun updateNotes(value: String) = updateForm { it.copy(notes = value) }
+    fun updateImageUri(value: String?) = updateForm { it.copy(imageUri = value) }
     fun updateFavorito(value: Boolean) = updateForm { it.copy(favorito = value) }
     fun updateZerado(value: Boolean) = updateForm { it.copy(zerado = value) }
     fun updateDesejado(value: Boolean) = updateForm { it.copy(naListaDeDesejos = value) }
@@ -81,6 +83,7 @@ class AddGameViewModel(
             val rating = form.rating.toFloat()
             val now = System.currentTimeMillis()
             val horas = form.horasJogadas.toIntOrNull()
+            val imageUri = form.imageUri?.trim()?.ifBlank { null }
 
             val baseGame = if (gameId != null) {
                 repository.getGameById(gameId)
@@ -97,6 +100,7 @@ class AddGameViewModel(
                 developer = form.developer.trim(),
                 rating = rating,
                 notes = form.notes.trim(),
+                imageUri = imageUri,
                 createdAt = baseGame?.createdAt ?: now,
                 favorito = form.favorito,
                 zerado = form.zerado,
@@ -135,6 +139,7 @@ class AddGameViewModel(
                         developer = game.developer,
                         rating = game.rating.toString(),
                         notes = game.notes,
+                        imageUri = game.imageUri,
                         favorito = game.favorito,
                         zerado = game.zerado,
                         naListaDeDesejos = game.naListaDeDesejos,
